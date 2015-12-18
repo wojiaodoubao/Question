@@ -1,0 +1,75 @@
+#encoding:utf-8
+import sys
+import random
+import Tool
+
+#Get pointNum
+point_Num = int(sys.argv[1])
+pointList = []
+Threshold = 2
+#Get random Points
+for w in range(point_Num):
+    x = random.randint(0,Threshold)
+    y = random.randint(0,Threshold)
+
+#BruteForce
+def BruteForce(pointList):
+    #去重
+    pointList=list(set(pointList))
+    #固定A点
+    A = Tool.findIth(0,len(pointList)-1,pointList,1,lambda x,y:cmp(x[1],y[1]))
+    #枚举B,C,P
+    while 1:
+        dropList=[]
+        for b in range(0,len(pointList)-1):
+            for c in range(b+1,len(pointList)):
+                for p in range(0,len(pointList)):
+                    if p==b or p==c:
+                        continue
+                    B=pointList[b]
+                    C=pointList[c]
+                    P=pointList[p]
+                    if B==A or C==A or P==A:
+                        continue
+                    if isInTriangle(A,B,C,P)==1:
+                        dropList.append(P)
+        if len(dropList)==0:
+            break
+        #去重
+        dropList=list(set(dropList))
+        print(dropList)
+        for p in dropList:
+            pointList.remove(p)
+    return pointList
+    
+#Is P in triangle ABC
+def isInTriangle(A,B,C,P):
+    #is A P the same side of BC
+    if isTheSameSide(A,B,C,P)=='same' and isTheSameSide(A,C,B,P)=='same' and isTheSameSide(B,C,A,P)=='same':
+        return 1
+    #is P on AB or AC or BC
+    f=lambda X,Y,P:cmp((X[1]-P[1])*(P[0]-Y[0]),(P[1]-Y[1])*(X[0]-P[0]))
+    if f(A,B,P)==0 or f(B,C,P)==0 or f(A,C,P)==0:
+        return 1
+    return 0
+
+#Determine if X,P are in the same side of L-R
+def isTheSameSide(L,R,X,P):
+    T1=L[0]-R[0]
+    T2=L[1]-R[1]
+    f=lambda T1,T2,L,P:T1*P[1]-T2*P[0]-T1*L[1]+T2*L[0]
+    if f(T1,T2,L,X)*f(T1,T2,L,P)>0:
+        return 'same'
+    return 'different'
+
+'''
+a=[(0,0),(1,0),(1,1),(0.5,0.6)]
+print(isInTriangle(*a))
+'''
+
+pointList = [(-1,0),(0,0),(0,1),(1,0)]
+#pointList = [(1,2),(2,3),(-1,3),(-2,3),(-3,3),(3,3),(4,3),(1,5)]
+#pointList = [(-2,9),(1,2),(2,3),(2,4),(1,5),(3,6),(-3,8),(-1,7),(-4,5)]
+#pointList=[(0,1),(0,0),(-1,3)]
+print(BruteForce(pointList))
+print(isInTriangle((1,2),(3,5),(2,3),(2,4)))
