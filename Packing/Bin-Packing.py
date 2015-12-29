@@ -1,7 +1,7 @@
 #encoding:utf-8
 
 def valueDP(item,C):
-	'''0-1背包 使用背包数N和总价值SumValue [2015-12-2 belanhd]
+	"""0-1背包 使用背包数N和总价值SumValue [2015-12-2 belanhd]
 
 	Args:
 		item: list[()] (v,c)
@@ -13,7 +13,7 @@ def valueDP(item,C):
 	e.g.:
 		item=[(5,3),(1,1),(7,6),(2,5),(19,9)]#物品0到N-1
 		C=10
-	'''
+	"""
 	#DP-i物品j价值需要的最小空间-不压缩
 	#init
 	N=len(item)

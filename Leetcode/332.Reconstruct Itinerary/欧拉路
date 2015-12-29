@@ -1,0 +1,39 @@
+欧拉路[图算法]
+
+	参考：http://www.cnblogs.com/buptLizer/archive/2012/04/15/2450297.html
+	参考：http://blog.csdn.net/shahdza/article/details/6630108
+
+1.欧拉回路：图G，若存在一条路，经过G中每条边有且仅有一次，称这条路为欧拉路，如果存在一条回路经过G每条边有且仅有一次，称这条回路为欧拉回路。具有欧拉回路的图成为欧拉图。
+2.判断欧拉路是否存在的方法：
+有向图：图连通，有一个顶点出度大入度1，有一个顶点入度大出度1，其余都是出度=入度。
+无向图：图连通，只有两个顶点是奇数度，其余都是偶数度的。
+3.判断欧拉回路是否存在的方法：
+有向图：图连通，所有的顶点出度=入度。
+无向图：图连通，所有顶点都是偶数度。
+
+关于欧拉路的题：
+1.求一条字典序最小的欧拉路：
+	1)求字典序最小欧拉路，天然可以用dfs，将邻接表中节点排序，搜到的第一个就是最小的。
+	2)搜到第一个不退出，而是加入结果集继续，则得到所有欧拉路。
+	3)相比传统的dfs，使用一个小技巧(每次都把node插到list首)可以得到一个更高效的方法，见下：
+LeetCode：332. Reconstruct Itinerary
+解法(https://discuss.leetcode.com/topic/36370/short-ruby-python-java-c/2)：
+public List<String> findItinerary(String[][] tickets) {
+    for (String[] ticket : tickets)//构造邻接表
+        targets.computeIfAbsent(ticket[0], k -> new PriorityQueue()).add(ticket[1]);//使用优先级队列做邻接表，方便解决重复边的问题，我没考虑到重复边，后来只能额外计数实现[囧
+    visit("JFK");
+    return route;
+}
+Map<String, PriorityQueue<String>> targets = new HashMap<>();
+List<String> route = new LinkedList();
+void visit(String airport) {
+    while(targets.containsKey(airport) && !targets.get(airport).isEmpty())//[妙]
+        visit(targets.get(airport).poll());
+    route.add(0, airport);
+}
+[妙]：这个地方写法很奇妙，构造route是exactly n的，即枚举每个路径一次后，得到route。
+举例说明：
+B<-A<-JFK->C->D->(JFK)
+传统dfs，先JFK->A->B，边还有但是已经"无路可走"，B返回A返回JFK，再走JFK-C-D-JFK-A-B结束。
+上面解法：JFK-A-B-C-D-JFK结束，没有走第二遍JFK-A-B，实现只需要route.add(0,airport)，每次都把节点插在list首。
+传统解法把JFK-A，A-B移除了，发现不对还得加回去，新方法就不需要。

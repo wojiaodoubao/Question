@@ -1,0 +1,26 @@
+import java.util.*;
+
+public class main{
+    public static int missingNumber(int[] nums) {
+        int start = 0;
+        int end = nums.length-1;
+        while(start<=end){
+            if(start==end){
+                if(start==nums.length-1 && nums[start]==nums.length-1)
+                    return nums.length;
+                //如果没有缺失的就会在上面返回，否则在这里返回
+                return start;
+            }
+            int mid = (start+end)/2;
+            if(nums[mid]==mid+1)
+                end = mid;
+            else
+                start = mid+1;
+        }
+        return -1;
+    }   
+    public static void main(String args[]){
+        int[] nums = {0,1,2,4,5};
+        System.out.println(missingNumber(nums));
+    }
+}
